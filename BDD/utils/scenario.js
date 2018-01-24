@@ -20,6 +20,11 @@ const Scenario = (code, title, data) => `  @${code}
 ${data.map(item => `    ${item}`).join('')}
 `
 
+/**
+ * Text step.js File
+ * @param {Array.<string>} data
+ * @return {string}
+ */
 const StepJS = data => `import { defineSupportCode } from 'cucumber'
 import { expect } from 'chai'
 import { clickLoginWithEmailButton } from './functions'
@@ -32,6 +37,12 @@ ${data.map((row) => {
 })
 `
 
+/**
+ * Text Step Function
+ * @param {string} type 
+ * @param {string} title
+ * @return {string} 
+ */
 const StepFunction = (type, title) => `
   ${type}(/^${title}$/, async () => {
     // await
@@ -79,6 +90,7 @@ ${scenarios.map((item) => {
 `
 }
 
+// -----------------------------------------------
 
 /**
  * Create BDD
