@@ -1,0 +1,31 @@
+{
+  "name": "bdd-tools",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "case": "^1.5.4",
+    "chalk": "^2.3.0",
+    "fs-extra": "^5.0.0",
+    "path": "^0.12.7",
+    "shelljs": "^0.8.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.1",
+    "eslint": "^4.16.0",
+    "eslint-config-react-app": "^2.1.0",
+    "eslint-plugin-flowtype": "^2.41.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.5.1"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  }
+}
