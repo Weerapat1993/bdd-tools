@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "bdd": "BBD/index.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,6 +15,7 @@
   "dependencies": {
     "case": "^1.5.4",
     "chalk": "^2.3.0",
+    "cli-table2": "^0.2.0",
     "fs-extra": "^5.0.0",
     "path": "^0.12.7",
     "shelljs": "^0.8.1"

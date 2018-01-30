@@ -6,6 +6,8 @@ const Before = title => `Before ${title}\n`
 const Given = title => `Given ${title}\n`
 const When = title => `When ${title}\n`
 const Then = title => `Then ${title}\n`
+const And = title => `  And ${title}\n`
+const But = title => `  But ${title}\n`
 const After = title => `After ${title}\n`
 
 /**
@@ -17,35 +19,40 @@ const After = title => `After ${title}\n`
  */
 const Scenario = (code, title, data) => `  @${code}
   Scenario: (${code.substring(8, 12)}) ${title}
-${data.map(item => `    ${item}`).join('')}
+${data.map(item => `    ${item}`).join('\n')}
 `
 
 /**
  * Text step.js File
- * @param {Array.<string>} data
+ * @param {ArrayScenario} data
  * @return {string}
  */
-const StepJS = data => `import { defineSupportCode } from 'cucumber'
+const StepJS = data => `// @${data.sid}
+import { defineSupportCode } from 'cucumber'
 import { expect } from 'chai'
-import { clickLoginWithEmailButton } from './functions'
+import { combineDriver } from '../../../../config'
 
 defineSupportCode(({ Given, When, Then }) => {
-${data.map((row) => {
+${data.stories.map((row) => {
     const type = row.trim().split(' ')[0]
-    return StepFunction(type, row.trim())
+    const msg = row.trim().split(' ').slice(1).join(' ')
+    return StepFunction(type, msg.trim())
   }).join('')}
 })
 `
 
 /**
  * Text Step Function
- * @param {string} type 
+ * @param {string} type
  * @param {string} title
- * @return {string} 
+ * @param {Array.<string>} arrayFunction
+ * @return {string}
  */
 const StepFunction = (type, title) => `
-  ${type}(/^${title}$/, async () => {
-    // await
+  ${type === 'And' ? 'Given' : type}(/^${title.replace(/\(/g, '\\(').replace(/\)/g, '\\)')}$/, async () => {
+    await combineDriver([
+      // Function
+    ])
   })
 `
 
@@ -74,14 +81,10 @@ const StepFunction = (type, title) => `
 const CreateFileFeature = (doc) => {
   const { feature, user, scenarios } = doc
   return `@${feature.fid}
-
 Feature: (${user.uid}) ${user.story.title}
-
-"""
   As ${user.story.as}
   I want to ${user.story.want_to}
   So that ${user.story.so_that}
-"""
 
 ${scenarios.map((item) => {
     const data = item
@@ -94,7 +97,7 @@ ${scenarios.map((item) => {
 
 /**
  * Create BDD
- * @param {Feature} Feature 
+ * @param {Feature} Feature
  */
 const CreateBDD = (Feature) => {
   const pwd = shell.pwd()
@@ -111,18 +114,21 @@ export const clickLoginWithEmailButton = (testID) => device => (
   device.waitForElementByAccessibilityId(testID).click()
 )  
 `
-  
   // Create File
   file
     .createDirectory(`/BDD/features/${folderName}`)
     .createFile(`/BDD/features/${folderName}/${fileFeatureName}.feature`, CreateFileFeature(Feature))
     .createDirectory(`/BDD/features/step_definitions`)
     .createDirectory(`/BDD/features/step_definitions/${folderName}`)
-    .createDirectory(`/BDD/features/step_definitions/${folderName}/functions`)
-    .createFile(`/BDD/features/step_definitions/${folderName}/functions/index.js`, fileFunction)
+    .createDirectory(`/BDD/features/step_definitions/${folderName}/${fileFeatureName}`)
+    .createDirectory(`/BDD/features/step_definitions/${folderName}/${fileFeatureName}/functions`)
+    .createFile(`/BDD/features/step_definitions/${folderName}/${fileFeatureName}/functions/index.js`, fileFunction)
   Feature.scenarios.forEach((item) => {
-    file.createFile(`/BDD/features/step_definitions/${folderName}/${item.sid}.step.js`, StepJS(item.stories))
+    file.createFile(`/BDD/features/step_definitions/${folderName}/${fileFeatureName}/${item.sid.substr(8, 12).toLowerCase()}.${fileFeatureName}.step.js`, StepJS(item))
   })
+  
+  // Status
+  file.status()
 }
 
 // Exports File -------------------------------------------------------------------------
@@ -131,10 +137,11 @@ exports.Before = Before
 exports.Given = Given
 exports.When = When
 exports.Then = Then
+exports.And = And
+exports.But = But
 exports.After = After
 
 exports.Scenario = Scenario
 exports.StepJS = StepJS
 exports.CreateFileFeature = CreateFileFeature
 exports.CreateBDD = CreateBDD
-
