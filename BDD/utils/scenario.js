@@ -1,3 +1,4 @@
+const fs = require('fs-extra')
 const Case = require('case')
 const shell = require('shelljs')
 const MakeFile = require('./MakeFile')
@@ -131,6 +132,21 @@ export const clickLoginWithEmailButton = (testID) => device => (
   file.status()
 }
 
+// Get BDD Config ------------------------------------------------------------
+
+/**
+ * Get BDD Config in bdd.config.json
+ * @typedef {Object} Config
+ * @property {Array.<Feature>} BDD
+ * 
+ * @return {Config}
+ */
+const getBBDConfig = () => {
+  const pwd = shell.pwd()
+  const config = fs.readJSONSync(`${pwd}/bdd.config.json`, 'utf8')
+  return config
+}
+
 // Exports File -------------------------------------------------------------------------
 
 exports.Before = Before
@@ -145,3 +161,4 @@ exports.Scenario = Scenario
 exports.StepJS = StepJS
 exports.CreateFileFeature = CreateFileFeature
 exports.CreateBDD = CreateBDD
+exports.getBBDConfig = getBBDConfig
