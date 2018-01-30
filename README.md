@@ -2,5 +2,5 @@
 
 ### How to Run
 ```sh
-node BDD
+npm run bdd
 ```

@@ -7,12 +7,18 @@
     "bdd": "BBD/index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "bdd": "node src/index.js",
+    "testID": "babel-node index.js"
   },
-  "keywords": [],
+  "keywords": [
+    "BDD"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0",
     "case": "^1.5.4",
     "chalk": "^2.3.0",
     "cli-table2": "^0.2.0",
