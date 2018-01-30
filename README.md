@@ -9,3 +9,8 @@ npm run bdd
 ```sh
 npm run testID
 ```
+
+### How to Show JSON Config in Appium
+```sh
+npm run config
+```

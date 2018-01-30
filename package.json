@@ -1,19 +1,20 @@
 {
   "name": "bdd-tools",
   "version": "1.0.0",
-  "description": "",
+  "description": "BDD Tools",
   "main": "index.js",
   "bin": {
     "bdd": "BBD/index.js"
   },
   "scripts": {
     "bdd": "node src/index.js",
+    "config": "node src/config.js",
     "testID": "babel-node index.js"
   },
   "keywords": [
     "BDD"
   ],
-  "author": "",
+  "author": "Mr.Weerapat Thawatchoketawee",
   "license": "ISC",
   "dependencies": {
     "babel-core": "^6.26.0",
