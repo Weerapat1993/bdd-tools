@@ -9,7 +9,7 @@
   "scripts": {
     "bdd": "node src/index.js",
     "config": "node src/config.js",
-    "testID": "babel-node index.js"
+    "testID": "babel-node src/testID.js"
   },
   "keywords": [
     "BDD"
