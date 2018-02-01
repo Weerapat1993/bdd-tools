@@ -38,11 +38,16 @@ import { defineSupportCode } from 'cucumber'
 import { expect } from 'chai'
 import { combineDriver, describe } from '../../../../config'
 
+/**
+ * Scenario: @${data.sid}${data.stories.map((row) => {
+  return (`\n * ${row.trim()}`)
+}).join('')}
+ */
 defineSupportCode(({ Given, When, Then }) => {
-${data.stories.map((row) => {
+${data.stories.map((row, index) => {
     const type = row.trim().split(' ')[0]
     const msg = row.trim().split(' ').slice(1).join(' ')
-    return StepFunction(type, msg.trim())
+    return StepFunction(type, msg.trim(), index)
   }).join('')}
 })
 `
@@ -51,14 +56,16 @@ ${data.stories.map((row) => {
  * Text Step Function
  * @param {string} type
  * @param {string} title
- * @param {Array.<string>} arrayFunction
+ * @param {number} index
  * @return {string}
  */
-const StepFunction = (type, title) => {
+const StepFunction = (type, title, index) => {
   const typeName = type === 'And' ? 'Given' : type
-  return `
-  ${typeName}(/^${title.replace(/\(/g, '\\(').replace(/\)/g, '\\)')}$/, async () => {
-    describe.${typeName}('${title}')
+  const titleMessage = `/^${title.replace(/\(/g, '\\(').replace(/\)/g, '\\)')}$/`
+  return ` 
+  const STEP_${index + 1} = '${title}'
+  ${typeName}(${titleMessage}, async () => {
+    describe.${typeName}(STEP_${index + 1})
     await combineDriver([
       // Function
     ])
