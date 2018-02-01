@@ -3,6 +3,10 @@ const Case = require('case')
 const shell = require('shelljs')
 const MakeFile = require('./MakeFile')
 
+// CONSTANTS
+const FOLDER_BDD = 'BDD'
+
+// Function
 const Before = title => `Before ${title}\n`
 const Given = title => `Given ${title}\n`
 const When = title => `When ${title}\n`
@@ -31,7 +35,7 @@ ${data.map(item => `    ${item}`).join('\n')}
 const StepJS = data => `// @${data.sid}
 import { defineSupportCode } from 'cucumber'
 import { expect } from 'chai'
-import { combineDriver } from '../../../../config'
+import { combineDriver, describe } from '../../../../config'
 
 defineSupportCode(({ Given, When, Then }) => {
 ${data.stories.map((row) => {
@@ -49,13 +53,17 @@ ${data.stories.map((row) => {
  * @param {Array.<string>} arrayFunction
  * @return {string}
  */
-const StepFunction = (type, title) => `
-  ${type === 'And' ? 'Given' : type}(/^${title.replace(/\(/g, '\\(').replace(/\)/g, '\\)')}$/, async () => {
+const StepFunction = (type, title) => {
+  const typeName = type === 'And' ? 'Given' : type
+  return `
+  ${typeName}(/^${title.replace(/\(/g, '\\(').replace(/\)/g, '\\)')}$/, async () => {
+    describe.${typeName}('${title}')
     await combineDriver([
       // Function
     ])
   })
 `
+}
 
 // -------------------------------------------------------------------------
 
@@ -77,7 +85,7 @@ const StepFunction = (type, title) => `
  * @property {{ uid: string, story: UserStory }} user
  * @property {Array.<ArrayScenario>} scenarios
  * 
- * @param {Feature} doc
+ * @param {Array,<Feature>} doc
  */
 const CreateFileFeature = (doc) => {
   const { feature, user, scenarios } = doc
@@ -98,36 +106,32 @@ ${scenarios.map((item) => {
 
 /**
  * Create BDD
- * @param {Feature} Feature
+ * @param {Features} Features
  */
-const CreateBDD = (Feature) => {
+const CreateBDD = (Features) => {
   const pwd = shell.pwd()
   const file = new MakeFile(pwd)
-  const folderName = Case.camel(Feature.feature.name.split('(')[0].trim())
-  const fileFeatureName = Case.camel(Feature.user.story.title)
 
-  const fileFunction = `
-/**
- * Click Login With Emial Button
- * @param {string} testID 
- */
-export const clickLoginWithEmailButton = (testID) => device => (
-  device.waitForElementByAccessibilityId(testID).click()
-)  
-`
-  // Create File
-  file
-    .createDirectory(`/BDD/features/${folderName}`)
-    .createFile(`/BDD/features/${folderName}/${fileFeatureName}.feature`, CreateFileFeature(Feature))
-    .createDirectory(`/BDD/features/step_definitions`)
-    .createDirectory(`/BDD/features/step_definitions/${folderName}`)
-    .createDirectory(`/BDD/features/step_definitions/${folderName}/${fileFeatureName}`)
-    .createDirectory(`/BDD/features/step_definitions/${folderName}/${fileFeatureName}/functions`)
-    .createFile(`/BDD/features/step_definitions/${folderName}/${fileFeatureName}/functions/index.js`, fileFunction)
-  Feature.scenarios.forEach((item) => {
-    file.createFile(`/BDD/features/step_definitions/${folderName}/${fileFeatureName}/${item.sid.substr(8, 12).toLowerCase()}.${fileFeatureName}.step.js`, StepJS(item))
+  Features.forEach(Feature => {
+    const folderName = Case.camel(Feature.feature.name.split('(')[0].trim())
+    const fileFeatureName = Case.camel(Feature.user.story.title)
+
+    // Create File
+    file
+      .createDirectory(`/${FOLDER_BDD}`)
+      .copyFolderTemplate(`/config`, `/${FOLDER_BDD}/config`)
+      .createDirectory(`/${FOLDER_BDD}/features`)
+      .createDirectory(`/${FOLDER_BDD}/features/${folderName}`)
+      .createFile(`/${FOLDER_BDD}/features/${folderName}/${fileFeatureName}.feature`, CreateFileFeature(Feature))
+      .createDirectory(`/${FOLDER_BDD}/features/step_definitions`)
+      .createDirectory(`/${FOLDER_BDD}/features/step_definitions/${folderName}`)
+      .createDirectory(`/${FOLDER_BDD}/features/step_definitions/${folderName}/${fileFeatureName}`)
+      .createDirectory(`/${FOLDER_BDD}/report`)
+    Feature.scenarios.forEach((item) => {
+      file.createFile(`/${FOLDER_BDD}/features/step_definitions/${folderName}/${fileFeatureName}/${item.sid.substr(8, 12).toLowerCase()}.${fileFeatureName}.step.js`, StepJS(item))
+    })
   })
-  
+
   // Status
   file.status()
 }

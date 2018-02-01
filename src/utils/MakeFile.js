@@ -1,6 +1,7 @@
-const fs = require('fs')
+const fs = require('fs-extra')
 const Log = require('./Log')
 const createTable = require('./createTable')
+const { path } = require('./path')
 
 const srcPath = (pwd, pathName) => `${pwd}${pathName}`
 
@@ -43,6 +44,20 @@ class MakeFile extends Log {
       this.data.push([
         this.git.merge('M'),
         this.git.merge(pathName),
+      ])
+    }
+    return this
+  }
+
+  copyFolderTemplate(templateName, pathName) {
+    const dirTemplate = path(`/src/templates${templateName}`)
+    const dirSrc = `${this.pwd}${pathName}`
+    if (!fs.existsSync(dirSrc)) {
+      this.createDirectory(pathName, true)
+      fs.copySync(dirTemplate, dirSrc);
+      this.data.push([
+        this.git.copy('C'),
+        this.git.copy(pathName.replace(this.pwd, '')),
       ])
     }
     return this

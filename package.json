@@ -2,14 +2,12 @@
   "name": "bdd-tools",
   "version": "1.0.0",
   "description": "BDD Tools",
-  "main": "index.js",
+  "main": "src/",
   "bin": {
-    "bdd": "BBD/index.js"
+    "bdd": "cmd.js"
   },
   "scripts": {
-    "bdd": "node src/index.js",
-    "config": "node src/config.js",
-    "testID": "babel-node src/testID.js"
+    "bdd": "node src/index.js"
   },
   "keywords": [
     "BDD"
@@ -22,6 +20,7 @@
     "case": "^1.5.4",
     "chalk": "^2.3.0",
     "cli-table2": "^0.2.0",
+    "commander": "^2.13.0",
     "fs-extra": "^5.0.0",
     "path": "^0.12.7",
     "shelljs": "^0.8.1"

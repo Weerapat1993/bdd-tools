@@ -6,4 +6,4 @@ const path = require('path')
  */
 const dirPath = (pathName) => path.join(__dirname, `../../${pathName}`)
 
-module.exports = dirPath
+exports.path = dirPath
