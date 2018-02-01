@@ -1,7 +1,8 @@
 const { CreateBDD, getBBDConfig } = require('../utils/scenario')
 
 const Create = () => {
-  CreateBDD(getBBDConfig().BDD)
+  const { BDD } = getBBDConfig()
+  CreateBDD(BDD)
 }
 
 module.exports = Create

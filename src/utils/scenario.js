@@ -1,6 +1,7 @@
 const fs = require('fs-extra')
 const Case = require('case')
 const shell = require('shelljs')
+const chalk = require('chalk')
 const MakeFile = require('./MakeFile')
 
 // CONSTANTS
@@ -85,7 +86,7 @@ const StepFunction = (type, title) => {
  * @property {{ uid: string, story: UserStory }} user
  * @property {Array.<ArrayScenario>} scenarios
  * 
- * @param {Array,<Feature>} doc
+ * @param {Feature} doc
  */
 const CreateFileFeature = (doc) => {
   const { feature, user, scenarios } = doc
@@ -106,11 +107,15 @@ ${scenarios.map((item) => {
 
 /**
  * Create BDD
- * @param {Features} Features
+ * @param {Array.<Feature>} Features
  */
-const CreateBDD = (Features) => {
+const CreateBDD = (Features = []) => {
   const pwd = shell.pwd()
   const file = new MakeFile(pwd)
+  if(!Features.length) {
+    // console.log(chalk.yellowBright('Warning: Features in bbd.config.json is null'))
+    return false
+  }
 
   Features.forEach(Feature => {
     const folderName = Case.camel(Feature.feature.name.split('(')[0].trim())
@@ -147,8 +152,13 @@ const CreateBDD = (Features) => {
  */
 const getBBDConfig = () => {
   const pwd = shell.pwd()
-  const config = fs.readJSONSync(`${pwd}/bdd.config.json`, 'utf8')
-  return config
+  try {
+    const config = fs.readJSONSync(`${pwd}/bdd.config.json`, 'utf8')
+    return config
+  } catch(err) {
+    console.log(chalk.red('Error: cannot file bdd.config.json'))
+    return { BDD: [] }
+  }
 }
 
 // Exports File -------------------------------------------------------------------------
