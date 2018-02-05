@@ -1,5 +1,4 @@
 import wd from 'wd'
-import R from 'ramda'
 import chalk from 'chalk'
 import server from './server'
 
