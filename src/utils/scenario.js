@@ -35,8 +35,7 @@ ${data.map(item => `    ${item}`).join('\n')}
  */
 const StepJS = data => `// @${data.sid}
 import { defineSupportCode } from 'cucumber'
-import { expect } from 'chai'
-import { combineDriver, describe } from '../../../../config'
+import { combineDriver } from '../../../../config'
 
 /**
  * Scenario: @${data.sid}${data.stories.map((row) => {
@@ -62,10 +61,8 @@ ${data.stories.map((row, index) => {
 const StepFunction = (type, title, index) => {
   const typeName = type === 'And' ? 'Given' : type
   const titleMessage = `/^${title.replace(/\(/g, '\\(').replace(/\)/g, '\\)')}$/`
-  return ` 
-  const STEP_${index + 1} = '${title}'
+  return `
   ${typeName}(${titleMessage}, async () => {
-    describe.${typeName}(STEP_${index + 1})
     await combineDriver([
       // Function
     ])
@@ -84,6 +81,7 @@ const StepFunction = (type, title, index) => {
  * @property {Array.<string>} stories
  * 
  * @typedef {Object} UserStory
+ * @property {string} title
  * @property {string} as
  * @property {string} want_to
  * @property {string} so_that
@@ -114,6 +112,56 @@ ${scenarios.map((item) => {
 
 /**
  * Create BDD
+ * 
+ * @example
+ * ```json
+ *  {
+ *     "feature": {
+ *       "fid": "F036",
+ *       "name": "Favourite Product (Wish lists)"
+ *     },
+ *     "user": {
+ *       "uid": "U001",
+ *       "story": {
+ *         "title": "Buyer add product as favourite",
+ *         "as": "member",
+ *         "want_to": "add interested product in to my favourite list.",
+ *         "so_that": "I can watch my interested product for future."
+ *       }
+ *     },
+ *     "scenarios": [
+ *       {
+ *         "sid": "F036U001S001",
+ *         "scenario": "Member add their favourite product from product detail page",
+ *         "outline": false,
+ *         "stories": [
+ *           "Given a member (who is signed in) is on \"Product Detail\" page",
+ *           "Given that product is not added to their favourites",
+ *           "When a member click \"Star\" icon (un-filled color star)",
+ *           "Then System add that product into their Favourites",
+ *           "Then System display message \"Added to My favourite\"",
+ *           "Then System change the star icon with filled color"
+ *         ]
+ *       },
+ *       {
+ *         "sid": "F036U001S002",
+ *         "scenario": "Member add their favourite product from Shopping cart",
+ *         "outline": false,
+ *         "stories": [
+ *           "Given a member (who is signed in) is on \"Shopping Cart\" page",
+ *           "Given that cart is not empty and a member select product (that is not added to their favourites)",
+ *           "When a member clicks \"Move to My Favourites\"",
+ *           "Then System add that product into their Favourites",
+ *           "Then System display confirm message \"Are you sure you would like to move item to My favourite?\"",
+ *           "Then System add that product into their Favourites after confirm",
+ *           "Then System display message \"Item has been moved to My favourite\"",
+ *           "Then System change the star icon with filled color",
+ *           "Then System remove product from Cart"
+ *         ]
+ *       }
+ *     ]
+ *   }
+ * ```
  * @param {Array.<Feature>} Features
  */
 const CreateBDD = (Features = []) => {
