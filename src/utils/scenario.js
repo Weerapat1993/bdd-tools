@@ -5,7 +5,7 @@ const chalk = require('chalk')
 const MakeFile = require('./MakeFile')
 
 // CONSTANTS
-const FOLDER_BDD = 'BDD'
+const FOLDER_BDD = 'e2e'
 
 // Function
 const Before = title => `Before ${title}\n`
@@ -35,7 +35,7 @@ ${data.map(item => `    ${item}`).join('\n')}
  */
 const StepJS = data => `// @${data.sid}
 import { defineSupportCode } from 'cucumber'
-import { combineDriver } from '../../../../config'
+import { combineDriver } from '../../../utils/combineDriver'
 
 /**
  * Scenario: @${data.sid}${data.stories.map((row) => {
